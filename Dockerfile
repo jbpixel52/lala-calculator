@@ -1,13 +1,10 @@
-FROM node:carbon
-# Create app directory
-WORKDIR /usr/src/docker-react-sample
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
-RUN npm install
-#To bundle your app’s source code inside the Docker image, use the COPY instruction:
-COPY . .
-#Your app binds to port 3000 so you’ll use the EXPOSE instruction to have it mapped by the docker daemon:
-EXPOSE 3000
-CMD [“npm”, “start”]
+FROM node:14-alpine AS development
+ENV NODE_ENV development
+# Add a work directory
+WORKDIR /lala-calculator
+# Cache and Install dependencies
+COPY package.json ./
+COPY package-lock.json ./
+COPY ./ ./
+RUN npm i
+CMD ["npm", "run", "start"]
