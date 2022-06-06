@@ -1,39 +1,83 @@
-import { Card, CardBody, CardFooter, CardHeader, RangeInput, Heading } from "grommet";
-import { useState } from "react";
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Heading,
+  Markdown,
+  Text,
+  TextInput,
+} from "grommet";
+import { useState, useEffect} from "react";
 import { Ngens } from "../tools/formulas";
 
 export default function CalculatorGUI() {
-  const [N0value, setValue] = useState(2);
+  const [N0value, setN0Value] = useState(2);
   const [N, setN] = useState(2);
-  const [T, setT] = useState(Ngens(N,N0value));
-    // let dash = [];
-    // for (let index = 0; index < 10; index++) {
-    //     dash.push({values: [index,Ngens(index,(N0value/(index+1))], label:'index']})
-        
-    // }
+  const [T, setT] = useState(0);
+  // function refreshT() {
+  //   setT(Ngens(N,N0value));
+  //   return T;
+  // }
+
+
+  useEffect(()=>{
+    console.log('used effect to UPDATE T value');
+    setTimeout(()=>{
+      setT(Ngens(N,N0value));
+    },200)
+  })
 
   const element = (
-    <Card width={"medium"} height={"medium"}
+    <Card
+      width={"medium"}
+      height={"medium"}
       className="Calculator"
-      pad={"large"}
+      pad={"small"}
       border={{ color: "neutral-3", size: "large" }}
     >
-      <CardHeader>
-        Neccesary generations for <h1>{N}</h1> cows
-      </CardHeader>
-      <CardBody height={"full"} pad={"medium"}>
-      <Heading margin="none" color={'dark-1'} width={true} size={"xlarge"}>{T}</Heading>
-      </CardBody>
-      <CardFooter>
-        <RangeInput color={"accent-4"} step={1}
-          min={3}
-          max={1000}
-          value={N}
+      <CardHeader className="CardHeader" direction="row">
+        <Text>With</Text>
+        <TextInput
+          placeholder={"Starting amount of [default = 2]"}
           onChange={(event) => {
-              setN(event.target.value);
-              setT(Ngens(N,N0value));
+            console.log('value in event is N0 is ' + event.target.value);
+            setN0Value(event.target.value);
+            setT(Ngens(N, N0value));
           }}
         />
+      </CardHeader>
+      <CardBody height={"full"} pad={"xsmall"} direction="column">
+        <CardHeader className="CardHeader" direction="row">
+          <Text>To</Text>
+          <TextInput
+            placeholder=" reach this amount of cows"
+            onChange={(event) => {
+              console.log('value in event is N is ' + event.target.value);
+              setN(event.target.value);
+              setT(Ngens(N,N0value));
+            }}
+          />
+        </CardHeader>
+
+        <Heading
+          animation={{
+            type: "jiggle",
+            delay: 1,
+            duration: 1000,
+            size: "small",
+          }}
+          margin="none"
+          color={"dark-1"}
+          height="full"
+          width={true}
+          size={"xlarge"}
+        >
+          {T}
+        </Heading>
+      </CardBody>
+      <CardFooter align="center" flex={true}>
+<Text>With <b>{N0value}</b> initial cows, to reach <b>{N}</b> cows. It takes <b>{T}</b> generations breeded</Text>
       </CardFooter>
     </Card>
   );
